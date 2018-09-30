@@ -30,12 +30,14 @@ $x = buildTree($categoriesArray);
  * prints $categoryTree->name recursively.
  */
 function recursive_print($categoryTree) {
-    if($categoryTree->name != "Main")
+    if($categoryTree->name != "Root")
         echo '<li><h4>' . $categoryTree->name . '</li></h4>';
     foreach($categoryTree->subCats as $subCat) {
-        echo '<ul>';
-        recursive_print($subCat);
-        echo '</ul>';
+        if(!empty($subCat)) {
+            echo '<ul>';
+            recursive_print($subCat);
+            echo '</ul>';
+        }
     }
 }
 /*
@@ -43,10 +45,9 @@ function recursive_print($categoryTree) {
  */
 function iterative_print($categoryTree) {
     $stack = array(array($categoryTree));
-    echo '<ul>'."\n";
     while (count($stack)) {
         $category = array_shift($stack[count($stack)-1]);
-        if($category->name != "Main")
+        if($category->name != "Root")
             echo '<li><h4>' . $category->name . '</li></h4>';
         echo '<ul>';
         $stack[] = $category->subCats;
@@ -69,7 +70,7 @@ function iterative_print($categoryTree) {
  */
 function buildTree($categoriesArray)
 {
-    $tree = new CategoryTree("Main");
+    $tree = new CategoryTree("Root");
     $registry = [0 => $tree]; // One entry: Main (parentId = 0)
     foreach ($categoriesArray as $c) {
         $catTree = new CategoryTree($c->name);
@@ -81,26 +82,62 @@ function buildTree($categoriesArray)
 ?>
 <html>
 <head>
+    <title>Category Tree</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style type="text/css">
+        html,
+        body {
+            height: 100%;
+        }
+        #footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
-<div class="main col-lg-9">
+<div class="container">
     <div class="col-lg-6">
         <h1>ITERATIVE PRINT</h1>
         <?php
+        $start = microtime(true);
         iterative_print($x);
+        $end = microtime(true);
+        $time = ($end - $start) * 1000;
+        echo("Function execution time: " . number_format($time,3) . " miliseconds.");
         ?>
     </div>
     <div class="col-lg-6">
         <h1>RECURSIVE PRINT</h1>
         <?php
+        $start = microtime(true);
         recursive_print($x);
+        $end = microtime(true);
+        $time = ($end - $start) * 1000;
+        echo("Function execution time: " . number_format($time,3) . " miliseconds.");
         ?>
     </div>
 </div>
 
 <div class="container">
-    <a href="form.php" id="x" class="btn btn-info" role="button">Add new category</a>
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-xs-4">
+                </div>
+                <div class="col-xs-4">
+                    <a href="form.php" id="x" class="btn btn-info" role="button">Add new category</a>
+                </div>
+                <div class="col-xs-4">
+                </div>
+            </div>
+        </div>
+</div>
+<div id="footer" class="page-footer fixed-bottom">
+    <div class="footer-copyright text-right py-3">© 2018 Copyright:
+        <a> Arnas Damasickis</a>
+    </div>
 </div>
 </body>
 </html>
