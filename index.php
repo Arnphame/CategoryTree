@@ -33,11 +33,9 @@ function recursive_print($categoryTree) {
     if($categoryTree->name != "Root")
         echo '<li><h4>' . $categoryTree->name . '</li></h4>';
     foreach($categoryTree->subCats as $subCat) {
-        if(!empty($subCat)) {
-            echo '<ul>';
-            recursive_print($subCat);
-            echo '</ul>';
-        }
+        echo '<ul>';
+        recursive_print($subCat);
+        echo '</ul>';
     }
 }
 /*
@@ -71,7 +69,7 @@ function iterative_print($categoryTree) {
 function buildTree($categoriesArray)
 {
     $tree = new CategoryTree("Root");
-    $registry = [0 => $tree]; // One entry: Main (parentId = 0)
+    $registry = [0 => $tree]; // One entry: Root (parentId = 0)
     foreach ($categoriesArray as $c) {
         $catTree = new CategoryTree($c->name);
         $registry[$c->id] = $catTree;
